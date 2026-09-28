@@ -164,4 +164,6 @@ return [
     'transaction_pending' => "Transaksi :type ':description' dalam status menunggu.",
     'transaction_updated' => "Data transaksi ':description' berhasil diperbarui.",
 
+    'all_categories' => 'Semua Kategori',
+    'uncategorized'  => 'Tanpa Kategori',
 ];

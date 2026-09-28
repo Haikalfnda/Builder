@@ -10,12 +10,12 @@ class Category extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'type', 'is_active'];
+    protected $fillable = ['name', 'type', 'is_active', 'required_fields'];
 
-    protected function casts(): array
-    {
-        return ['is_active' => 'boolean'];
-    }
+    protected $casts = [
+        'is_active' => 'boolean',
+        'required_fields' => 'array',
+    ];
 
     public function transactions(): HasMany
     {

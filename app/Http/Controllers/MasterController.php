@@ -49,8 +49,12 @@ class MasterController extends Controller
     {
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'], 
-            'type' => ['required', 'in:income,expense,both']
+            'type' => ['required', 'in:income,expense,both'],
+            'required_fields' => ['nullable', 'array'],
         ]);
+
+        $defaultFields = ['date', 'quantity', 'unit_price', 'payment_method', 'description'];
+        $data['required_fields'] = $request->input('required_fields', $defaultFields);
         
         Category::create($data + ['is_active' => true]);
         
@@ -62,10 +66,16 @@ class MasterController extends Controller
         $data = $request->validate([
             'name'      => ['required', 'string', 'max:120'], 
             'type'      => ['required', 'in:income,expense,both'], 
-            'is_active' => ['nullable', 'boolean']
+            'is_active' => ['nullable', 'boolean'],
+            'required_fields' => ['nullable', 'array'],
         ]);
         
-        $category->update($data + ['is_active' => $request->boolean('is_active')]);
+        $category->update([
+        'name' => $data['name'],
+        'type' => $data['type'],
+        'is_active' => $request->boolean('is_active'),
+        'required_fields' => $request->input('required_fields', []),
+        ]);
         
         return back()->with('success', __('alerts.category_updated'));
     }

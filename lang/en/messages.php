@@ -163,4 +163,7 @@ return [
     'transaction_recorded' => "Transaction :type ':description' was successfully recorded.",
     'transaction_pending' => "Transaction :type ':description' is pending.",
     'transaction_updated' => "Transaction ':description' was successfully updated.",
+
+    'all_categories' => 'All Categories',
+    'uncategorized'  => 'Uncategorized',
 ];

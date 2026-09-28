@@ -48,6 +48,29 @@
             {{ __('messages.expense') }}
         </option>
     </select>
+
+    {{-- FILTER KATEGORI BARU --}}
+    <select name="category_id">
+        <option value="">
+            {{ __('messages.all_categories') ?? 'Semua Kategori' }}
+        </option>
+        <option value="uncategorized" @selected(request('category_id') === 'uncategorized')>
+            {{ __('messages.uncategorized') ?? 'Tanpa Kategori' }}
+        </option>
+        @if(isset($categories))
+            @foreach($categories as $cat)
+                @php
+                    $catTranslated = __('categories.' . \Illuminate\Support\Str::slug($cat->name, '_')) !== 'categories.' . \Illuminate\Support\Str::slug($cat->name, '_')
+                        ? __('categories.' . \Illuminate\Support\Str::slug($cat->name, '_'))
+                        : $cat->name;
+                @endphp
+                <option value="{{ $cat->id }}" @selected((string) request('category_id') === (string) $cat->id)>
+                    {{ $catTranslated }}
+                </option>
+            @endforeach
+        @endif
+    </select>
+
     <button class="outline-button" type="submit">
         {{ __('messages.apply') }}
     </button>

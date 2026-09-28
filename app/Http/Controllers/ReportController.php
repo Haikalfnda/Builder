@@ -14,10 +14,23 @@ class ReportController extends Controller
         $month = (int) ($request->input('month') ?: now()->month);
         $year = (int) ($request->input('year') ?: now()->year);
         $type = $request->input('type');
+        $categoryId = $request->input('category_id');
+
+        $categories = Category::orderBy('name')->get();
 
         $base = Transaction::query()->with(['category', 'tourismPlace', 'incomeSource'])
-            ->whereYear('transaction_date', $year)->whereMonth('transaction_date', $month);
-        if (in_array($type, ['income', 'expense'], true)) $base->where('type', $type);
+            ->whereYear('transaction_date', $year)
+            ->whereMonth('transaction_date', $month);
+
+        if (in_array($type, ['income', 'expense'], true)) {
+            $base->where('type', $type);
+        }
+
+        if ($categoryId === 'uncategorized') {
+            $base->whereNull('category_id');
+        } elseif ($categoryId) {
+            $base->where('category_id', $categoryId);
+        }
 
         $transactions = (clone $base)->latest('transaction_date')->get();
         $income = (clone $base)->where('type', 'income')->sum('amount');
@@ -25,14 +38,27 @@ class ReportController extends Controller
         $net = $income - $expense;
 
         $distribution = (clone $base)->where('type', 'expense')
+            ->with('category')
             ->selectRaw('category_id, SUM(amount) as total')
-            ->groupBy('category_id')->orderByDesc('total')->get()
+            ->groupBy('category_id')
+            ->orderByDesc('total')
+            ->get()
             ->map(function ($row) use ($expense) {
-                $row->category_name = Category::find($row->category_id)?->name ?? 'Tanpa Kategori';
+                $row->category_name = $row->category?->name ?? 'Tanpa Kategori';
                 $row->percentage = $expense > 0 ? round(((float) $row->total / $expense) * 100, 1) : 0;
                 return $row;
             });
 
-        return view('reports.index', compact('transactions', 'income', 'expense', 'net', 'distribution', 'month', 'year', 'type'));
+        return view('reports.index', compact(
+            'transactions', 
+            'income', 
+            'expense', 
+            'net', 
+            'distribution', 
+            'categories', 
+            'month', 
+            'year', 
+            'type'
+        ));
     }
 }
