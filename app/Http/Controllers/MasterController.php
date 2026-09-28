@@ -54,4 +54,49 @@ class MasterController extends Controller
         IncomeSource::create($data + ['is_active' => true]);
         return back()->with('success', 'Sumber pendapatan berhasil ditambahkan.');
     }
+
+    public function updateSource(Request $request, IncomeSource $source): RedirectResponse
+{
+    $data = $request->validate([
+        'name' => ['required', 'string', 'max:120'],
+        'is_active' => ['nullable', 'boolean']
+    ]);
+
+    $source->update([
+        'name' => $data['name'],
+        'is_active' => $request->boolean('is_active')
+    ]);
+
+    return back()->with('success', 'Sumber pendapatan berhasil diperbarui.');
+}
+
+    public function destroyPlace(TourismPlace $place): RedirectResponse
+    {
+        if ($place->transactions()->exists()) {
+            return back()->with('error', 'Tempat wisata tidak bisa dihapus karena sudah memiliki riwayat transaksi! Silakan nonaktifkan.');
+        }
+
+        $place->delete();
+        return back()->with('success', 'Tempat wisata berhasil dihapus.');
+    }
+
+    public function destroyCategory(Category $category): RedirectResponse
+    {
+        if ($category->transactions()->exists()) {
+            return back()->with('error', 'Kategori tidak bisa dihapus karena sudah memiliki riwayat transaksi! Silakan nonaktifkan.');
+        }
+
+        $category->delete();
+        return back()->with('success', 'Kategori berhasil dihapus.');
+    }
+
+    public function destroySource(IncomeSource $source): RedirectResponse
+    {
+        if ($source->transactions()->exists()) {
+            return back()->with('error', 'Sumber pendapatan tidak bisa dihapus karena sudah memiliki riwayat transaksi! Silakan nonaktifkan.');
+        }
+
+        $source->delete();
+        return back()->with('success', 'Sumber pendapatan berhasil dihapus.');
+    }
 }

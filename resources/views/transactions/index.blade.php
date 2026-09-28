@@ -5,12 +5,12 @@
     {{-- Page Heading --}}
     <div class="page-heading-row">
         <div>
-            <h1>Financial Data</h1>
-            <p>Review and manage transaction records.</p>
+            <h1>Data Keuangan</h1>
+            <p>Tinjau dan kelola catatan transaksi.</p>
         </div>
 
         <a href="{{ route('transactions.create') }}" class="gold-button">
-            + Add Entry
+            + Tambah Transaksi
         </a>
     </div>
 
@@ -28,13 +28,13 @@
                 type="text"
                 name="search"
                 value="{{ request('search') }}"
-                placeholder="Search transactions..."
+                placeholder="Cari transaksi..."
             >
         </div>
 
 
         <select name="type">
-            <option value="">All Types</option>
+            <option value="">Semua Tipe</option>
 
             <option
                 value="income"
@@ -53,21 +53,21 @@
 
 
         <select name="month">
-            <option value="">All Months</option>
+            <option value="">Semua Bulan</option>
 
             @foreach (range(1, 12) as $m)
                 <option
                     value="{{ $m }}"
                     @selected((string) request('month') === (string) $m)
                 >
-                    {{ \Illuminate\Support\Carbon::create()->month($m)->format('F') }}
+                    {{ \Illuminate\Support\Carbon::create()->locale('id')->month($m)->translatedFormat('F') }}
                 </option>
             @endforeach
         </select>
 
 
         <select name="year">
-            <option value="">All Years</option>
+            <option value="">Semua Tahun</option>
 
             @foreach (range(now()->year - 2, now()->year + 1) as $y)
                 <option
@@ -81,7 +81,7 @@
 
 
         <select name="category_id">
-            <option value="">All Categories</option>
+            <option value="">Semua Kategori</option>
 
             @foreach ($categories as $category)
                 <option
@@ -109,7 +109,7 @@
 
 
         <select name="income_source_id">
-            <option value="">Sumber Pendapatan</option>
+            <option value="">Semua Sumber Pendapatan</option>
 
             @foreach ($sources as $source)
                 <option
@@ -141,14 +141,14 @@
         {{-- Table Header --}}
         <div class="table-top">
             <span>
-                {{ $transactions->total() }} entries
+                {{ $transactions->total() }} entri
             </span>
 
             <a
                 class="outline-button compact"
                 href="{{ route('masters.index') }}"
             >
-                Edit dropdown data
+                Edit data opsi
             </a>
         </div>
 
@@ -160,16 +160,16 @@
 
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Description / Paket Wisata</th>
-                        <th>Category</th>
-                        <th>Place</th>
-                        <th>Source</th>
-                        <th>Qty</th>
-                        <th>Unit Price</th>
-                        <th>Amount</th>
+                        <th>Tanggal</th>
+                        <th>Deskripsi / Paket Wisata</th>
+                        <th>Kategori</th>
+                        <th>Tempat Wisata</th>
+                        <th>Sumber</th>
+                        <th>Jumlah (Qty)</th>
+                        <th>Harga Satuan</th>
+                        <th>Total</th>
                         <th>Status</th>
-                        <th>Action</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
 
@@ -266,7 +266,7 @@
 
                                 {{-- Edit --}}
                                 <a
-                                    title="Edit"
+                                    title="Ubah"
                                     href="{{ route('transactions.edit', $t) }}"
                                 >
                                     ✎
@@ -284,7 +284,7 @@
 
                                     <button
                                         type="submit"
-                                        title="Delete"
+                                        title="Hapus"
                                         class="delete-btn"
                                     >
                                         <svg
@@ -338,13 +338,13 @@
             <div class="pagination-row">
 
                 <div class="pagination-info">
-                    Showing
+                    Menampilkan
                     <strong>{{ $transactions->firstItem() ?? 0 }}</strong>
-                    to
+                    sampai
                     <strong>{{ $transactions->lastItem() ?? 0 }}</strong>
-                    of
+                    dari
                     <strong>{{ $transactions->total() }}</strong>
-                    results
+                    data
                 </div>
 
 
@@ -354,7 +354,7 @@
                     @if ($transactions->onFirstPage())
 
                         <span class="disabled">
-                            « Previous
+                            « Sebelumnya
                         </span>
 
                     @else
@@ -362,7 +362,7 @@
                         <a
                             href="{{ $transactions->withQueryString()->previousPageUrl() }}"
                         >
-                            « Previous
+                            « Sebelumnya
                         </a>
 
                     @endif
@@ -400,13 +400,13 @@
                         <a
                             href="{{ $transactions->withQueryString()->nextPageUrl() }}"
                         >
-                            Next »
+                            Berikutnya »
                         </a>
 
                     @else
 
                         <span class="disabled">
-                            Next »
+                            Berikutnya »
                         </span>
 
                     @endif

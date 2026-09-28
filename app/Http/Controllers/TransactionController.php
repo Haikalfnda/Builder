@@ -64,10 +64,21 @@ class TransactionController extends Controller
 
         $transaction = Transaction::create($validated);
 
-        $statusNotif = $transaction->status == 'completed' ? 'success' : 'failed';
-        $pesanNotif = ($statusNotif === 'success')
-        ? "Transaksi {$transaction->type} '{$transaction->description}' berhasil dicatat."
-        : "Transaksi {$transaction->type} '{$transaction->description}' dalam status pending";
+        $statusNotif = $transaction->status === 'completed' ? 'success' : 'failed';
+
+        $pesanNotif = $statusNotif === 'success'
+            ? __('messages.transaction_recorded', [
+                'type' => $transaction->type === 'income'
+                    ? __('messages.income')
+                    : __('messages.expense'),
+                'description' => $transaction->description,
+            ])
+            : __('messages.transaction_pending', [
+                'type' => $transaction->type === 'income'
+                    ? __('messages.income')
+                    : __('messages.expense'),
+                'description' => $transaction->description,
+            ]);
 
         $request->user()->notify(new PaymentStatusNotification(
             $statusNotif,
@@ -90,7 +101,9 @@ class TransactionController extends Controller
         $transaction->update($validated);
 
     $statusNotif = $transaction->status === 'completed' ? 'success' : 'failed';
-    $pesanNotif  = "Data transaksi '{$transaction->description}' berhasil diperbarui.";
+    $pesanNotif = __('messages.transaction_updated', [
+        'description' => $transaction->description,
+]);
 
     $request->user()->notify(new PaymentStatusNotification(
         $statusNotif,

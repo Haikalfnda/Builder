@@ -258,3 +258,29 @@ background:rgba(255,255,255,.86);
     background: #fdeaea;
     color: #923535;
 }
+
+@media print {
+    .hero-actions, 
+    .filter-panel, 
+    nav, 
+    footer, 
+    button {
+        display: none !important;
+    }
+
+    body {
+        background: white !important;
+        color: black !important;
+    }
+
+    .panel, .metric-card {
+        border: 1px solid #ddd !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+    }
+
+    table {
+        width: 100% !important;
+        font-size: 12px;
+    }
+}
