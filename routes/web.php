@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MasterController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => redirect()->route('login'));
@@ -23,6 +24,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/master-data/places/{place}', [MasterController::class, 'updatePlace'])->name('masters.places.update');
     Route::post('/master-data/categories', [MasterController::class, 'storeCategory'])->name('masters.categories.store');
     Route::put('/master-data/categories/{category}', [MasterController::class, 'updateCategory'])->name('masters.categories.update');
+    Route::resource('categories', CategoryController::class)->except(['create', 'edit', 'show']);
+    Route::get('/api/categories/{category}/fields', [CategoryController::class, 'getFields'])->name('api.categories.fields');
     
     Route::post('/master-data/sources', [MasterController::class, 'storeSource'])->name('masters.sources.store');
     Route::put('/master-data/sources/{source}', [MasterController::class, 'updateSource'])->name('masters.sources.update');
@@ -34,7 +37,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'id'])) {
         session(['locale' => $locale]);
+        app()->setLocale($locale);
     }
+
     return redirect()->back();
 })->name('lang.switch');
 });

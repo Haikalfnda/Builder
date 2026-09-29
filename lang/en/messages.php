@@ -126,6 +126,28 @@ return [
     'cancel' => 'Cancel',
 
     // Master Data
+    'field_defaults' => 'Default Fields',
+    'field_defaults_description' => 'Enable the fields you want to use for this category.',
+    'custom_fields' => 'Custom Fields',
+    'custom_fields_description' => 'Add custom inputs for this category.',
+    'add_field' => 'Add Field',
+    'delete_category' => 'Delete Category',
+
+    'field_name' => 'Field name',
+    'field_options_placeholder' => 'Options: A, B, C',
+    'required' => 'Required',
+    'field_date' => 'Date',
+    'field_quantity' => 'Quantity',
+    'field_unit_price' => 'Unit Price',
+    'field_amount' => 'Total Payment',
+    'field_tourism_place' => 'Tourist Destination',
+    'field_income_source' => 'Income Source',
+    'field_payment_method' => 'Payment Method',
+    'field_package_name' => 'Tour Package',
+    'field_description' => 'Description',
+    'field_proof' => 'Payment Proof',
+    'field_status' => 'Status',
+
     'master_data_title' => 'Master Data',
     'master_data_description' => 'Manage dropdown data for categories, tourist places, and income sources.',
     'new_tourism_place' => 'New tourist place',
@@ -166,4 +188,12 @@ return [
 
     'all_categories' => 'All Categories',
     'uncategorized'  => 'Uncategorized',
+    'add' => 'Add',
+    'active' => 'Active',
+    'description' => 'Description',
+    'new_place' => 'New tourist place',
+    'new_category' => 'New category',
+    'new_source' => 'New income source',
+    'both' => 'Both',
+    'confirm_delete' => 'Are you sure you want to delete this data?',
 ];

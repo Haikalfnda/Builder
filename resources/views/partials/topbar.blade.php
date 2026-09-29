@@ -191,15 +191,6 @@
                         {{ __('messages.settings') }}
                     </div>
 
-                    <a
-                        href="{{ route('masters.index') }}"
-                        class="dropdown-item"
-                    >
-                        📊 {{ __('messages.master_data') }}
-                    </a>
-
-                    <div class="dropdown-divider"></div>
-
                     <div class="dropdown-header">
                         🌐 {{ __('messages.language') }}
                     </div>

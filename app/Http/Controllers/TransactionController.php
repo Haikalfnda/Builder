@@ -58,7 +58,8 @@ class TransactionController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $this->validateEntry($request);
-        $validated['amount'] = round((float) $validated['quantity'] * (float) $validated['unit_price'], 2);
+        $validated['user_id'] = $request->user()?->id;
+        $validated['amount'] = round((float) ($validated['quantity'] ?? 0) * (float) ($validated['unit_price'] ?? 0), 2);
         $validated['status'] = $validated['status'] ?? 'completed';
         $validated['proof_path'] = $this->storeProof($request);
 
@@ -80,7 +81,7 @@ class TransactionController extends Controller
                 'description' => $transaction->description,
             ]);
 
-        $request->user()->notify(new PaymentStatusNotification(
+        $request->user()?->notify(new PaymentStatusNotification(
             $statusNotif,
             $transaction->amount,
             $pesanNotif
@@ -92,24 +93,27 @@ class TransactionController extends Controller
     public function update(Request $request, Transaction $transaction): RedirectResponse
     {
         $validated = $this->validateEntry($request);
-        $validated['amount'] = round((float) $validated['quantity'] * (float) $validated['unit_price'], 2);
+        $validated['amount'] = round((float) ($validated['quantity'] ?? 0) * (float) ($validated['unit_price'] ?? 0), 2);
         $validated['status'] = $validated['status'] ?? $transaction->status;
+        
         if ($path = $this->storeProof($request)) {
             if ($transaction->proof_path) Storage::disk('public')->delete($transaction->proof_path);
             $validated['proof_path'] = $path;
         }
+
         $transaction->update($validated);
 
-    $statusNotif = $transaction->status === 'completed' ? 'success' : 'failed';
-    $pesanNotif = __('messages.transaction_updated', [
-        'description' => $transaction->description,
-]);
+        $statusNotif = $transaction->status === 'completed' ? 'success' : 'failed';
+        $pesanNotif = __('messages.transaction_updated', [
+            'description' => $transaction->description,
+        ]);
 
-    $request->user()->notify(new PaymentStatusNotification(
-        $statusNotif,
-        $transaction->amount,
-        $pesanNotif
-    ));
+        $request->user()?->notify(new PaymentStatusNotification(
+            $statusNotif,
+            $transaction->amount,
+            $pesanNotif
+        ));
+
         return redirect()->route('transactions.index')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
@@ -126,8 +130,8 @@ class TransactionController extends Controller
             'type' => ['required', 'in:income,expense'],
             'category_id' => ['required', 'exists:categories,id'],
             'transaction_date' => ['required', 'date'],
-            'quantity' => ['required', 'numeric', 'min:0.01'],
-            'unit_price' => ['required', 'numeric', 'min:0'],
+            'quantity' => ['nullable', 'numeric', 'min:0'],
+            'unit_price' => ['nullable', 'numeric', 'min:0'],
             'tourism_place_id' => ['nullable', 'exists:tourism_places,id'],
             'income_source_id' => ['nullable', 'exists:income_sources,id'],
             'package_name' => ['nullable', 'string', 'max:150'],
@@ -135,6 +139,7 @@ class TransactionController extends Controller
             'description' => ['required', 'string', 'max:500'],
             'status' => ['nullable', 'in:completed,pending'],
             'proof' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:5120'],
+            'custom_values' => ['nullable', 'array'], // Menampung input kustom dari kategori
         ], [
             'category_id.required' => 'Kategori wajib dipilih sebelum tanggal dan jumlah.',
             'proof.max' => 'Bukti bayar maksimal 5 MB.',

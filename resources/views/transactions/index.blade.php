@@ -130,7 +130,19 @@
                             <td>
                                 <b>{{ $t->description }}</b>
                                 @if ($t->package_name)
-                                    <small>{{ $t->package_name }}</small>
+                                    <div><small style="color: #6b7280;">{{ $t->package_name }}</small></div>
+                                @endif
+
+                                {{-- Render Custom Values --}}
+                                @if (!empty($t->custom_values))
+                                    <div style="margin-top: 4px; font-size: 11px; color: #4b5563; background: #f3f4f6; padding: 4px 6px; border-radius: 4px;">
+                                        @foreach ($t->custom_values as $key => $value)
+                                            <div>
+                                                <strong>{{ ucfirst(str_replace('_', ' ', $key)) }}:</strong>
+                                                {{ is_array($value) ? implode(', ', $value) : $value }}
+                                            </div>
+                                        @endforeach
+                                    </div>
                                 @endif
                             </td>
                             <td>

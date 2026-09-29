@@ -20,5 +20,8 @@
         <a class="nav-item {{ request()->routeIs('reports.*') ? 'active' : '' }}" href="{{ route('reports.index') }}">
             <span class="nav-icon">▥</span><span>{{ __('sidebar.reports') }}</span>
         </a>
+        <a class="nav-item {{ request()->routeIs('masters.*') ? 'active' : '' }}" href="{{ route('masters.index') }}">
+            <span class="nav-icon">⚙</span><span>{{ __('messages.master_data') }}</span>
+        </a>
     </nav>
 </aside>

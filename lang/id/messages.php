@@ -126,6 +126,28 @@ return [
     'cancel' => 'Batal',
 
     // Master Data
+    'field_defaults' => 'Field Bawaan',
+    'field_defaults_description' => 'Aktifkan field yang ingin digunakan pada kategori ini.',
+    'custom_fields' => 'Field Kustom',
+    'custom_fields_description' => 'Tambahkan input khusus untuk kategori ini.',
+    'add_field' => 'Tambah Field',
+    'delete_category' => 'Hapus Kategori',
+
+    'field_name' => 'Nama field',
+    'field_options_placeholder' => 'Opsi: A, B, C',
+    'required' => 'Wajib',
+    'field_date' => 'Tanggal',
+    'field_quantity' => 'Jumlah',
+    'field_unit_price' => 'Harga Satuan',
+    'field_amount' => 'Total Pembayaran',
+    'field_tourism_place' => 'Tempat Wisata',
+    'field_income_source' => 'Sumber Pendapatan',
+    'field_payment_method' => 'Metode Bayar',
+    'field_package_name' => 'Paket Wisata',
+    'field_description' => 'Keterangan',
+    'field_proof' => 'Bukti Bayar',
+    'field_status' => 'Status',
+
     'master_data_title' => 'Data Master',
     'master_data_description' => 'Kelola isi dropdown kategori, tempat wisata, dan sumber pendapatan.',
     'new_tourism_place' => 'Tempat wisata baru',
@@ -166,4 +188,12 @@ return [
 
     'all_categories' => 'Semua Kategori',
     'uncategorized'  => 'Tanpa Kategori',
+    'add' => 'Tambah',
+    'active' => 'Aktif',
+    'description' => 'Keterangan',
+    'new_place' => 'Tempat wisata baru',
+    'new_category' => 'Kategori baru',
+    'new_source' => 'Sumber pendapatan baru',
+    'both' => 'Keduanya',
+    'confirm_delete' => 'Yakin ingin menghapus data ini?',
 ];

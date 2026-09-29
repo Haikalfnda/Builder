@@ -95,7 +95,7 @@
                 <input type="hidden" name="amount" id="amountInput" value="{{ old('amount', $transaction->amount ?? 0) }}">
             </div>
 
-            <div class="field" data-field="place">
+            <div class="field" data-field="tourism_place_id">
                 <label>{{ __('messages.place') }}</label>
 
                 <select name="tourism_place_id">
@@ -112,7 +112,7 @@
                 </select>
             </div>
 
-            <div class="field income-only" data-field="source">
+            <div class="field income-only" data-field="income_source_id">
                 <label>{{ __('messages.income_source') }}</label>
 
                 <select name="income_source_id">
@@ -145,7 +145,7 @@
                 </select>
             </div>
 
-            <div class="field full" data-field="package">
+            <div class="field full" data-field="package_name">
                 <label>{{ __('messages.tour_package') }}</label>
 
                 <input type="text"
@@ -203,6 +203,11 @@
 
         </div>
 
+        <div id="customFieldsContainer" class="field full" style="display: none; margin-top: 12px; border-top: 1px dashed #e5e7eb; padding-top: 12px;">
+            <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">{{ __('messages.custom_fields') ?? 'Informasi Tambahan Kategori' }}</h4>
+            <div id="customFieldsList" class="form-grid"></div>
+        </div>
+
         <div class="form-actions" style="margin-top: 24px;">
             <a class="text-button" href="{{ route('transactions.index') }}">
                 {{ __('messages.cancel') }}
@@ -229,6 +234,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalDisplay = document.getElementById('totalDisplay');
     const amountInput = document.getElementById('amountInput');
 
+    const customFieldsContainer = document.getElementById('customFieldsContainer');
+    const customFieldsList = document.getElementById('customFieldsList');
+
+    // Mengambil nilai awal custom_values jika sedang mode edit
+    const existingCustomValues = @json(old('custom_values', $transaction->custom_values ?? []));
+
     function calculateTotal() {
         const qty = parseFloat(qtyInput?.value) || 0;
         const price = parseFloat(priceInput?.value) || 0;
@@ -248,11 +259,65 @@ document.addEventListener('DOMContentLoaded', function() {
         calculateTotal();
     }
 
+    function renderCategoryCustomFields(categoryId) {
+        if (!categoryId || !customFieldsContainer) return;
+
+        fetch(`/api/categories/${categoryId}/fields`)
+            .then(res => res.json())
+            .then(fields => {
+                customFieldsList.innerHTML = '';
+                if (!fields || fields.length === 0) {
+                    customFieldsContainer.style.display = 'none';
+                    return;
+                }
+
+                customFieldsContainer.style.display = 'block';
+
+                fields.forEach(field => {
+                    const fieldDiv = document.createElement('div');
+                    fieldDiv.className = (field.field_type === 'textarea') ? 'field full' : 'field';
+
+                    const label = document.createElement('label');
+                    label.innerHTML = `${field.field_label} ${field.is_required ? '<span style="color:red">*</span>' : ''}`;
+                    fieldDiv.appendChild(label);
+
+                    const inputName = `custom_values[${field.field_name}]`;
+                    const val = existingCustomValues[field.field_name] || '';
+                    const requiredAttr = field.is_required ? 'required' : '';
+
+                    let inputEl = '';
+                    if (field.field_type === 'text') {
+                        inputEl = `<input type="text" name="${inputName}" value="${val}" ${requiredAttr}>`;
+                    } else if (field.field_type === 'number') {
+                        inputEl = `<input type="number" name="${inputName}" value="${val}" ${requiredAttr}>`;
+                    } else if (field.field_type === 'date') {
+                        inputEl = `<input type="date" name="${inputName}" value="${val}" ${requiredAttr}>`;
+                    } else if (field.field_type === 'textarea') {
+                        inputEl = `<textarea name="${inputName}" rows="3" ${requiredAttr}>${val}</textarea>`;
+                    } else if (field.field_type === 'select') {
+                        let opts = '<option value="">-- Pilih --</option>';
+                        (field.options || []).forEach(opt => {
+                            const selected = val === opt ? 'selected' : '';
+                            opts += `<option value="${opt}" ${selected}>${opt}</option>`;
+                        });
+                        inputEl = `<select name="${inputName}" ${requiredAttr}>${opts}</select>`;
+                    }
+
+                    fieldDiv.insertAdjacentHTML('beforeend', inputEl);
+                    customFieldsList.appendChild(fieldDiv);
+                });
+            })
+            .catch(() => {
+                customFieldsContainer.style.display = 'none';
+            });
+    }
+
     function syncFormState() {
         const selectedOption = categorySelect.options[categorySelect.selectedIndex];
         
         if (!categorySelect.value) {
             dynamicFields.style.display = 'none';
+            if (customFieldsContainer) customFieldsContainer.style.display = 'none';
             return;
         }
 
@@ -264,7 +329,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('[data-field]').forEach(fieldEl => {
             const fieldName = fieldEl.getAttribute('data-field');
             
-            // Cek ketersediaan field (penanganan khusus 'amount' agar bisa tampil otomatis jika quantity & unit_price aktif)
             let isAllowed = allowedFields.includes(fieldName);
 
             if (fieldName === 'amount' && (allowedFields.includes('amount') || (allowedFields.includes('quantity') && allowedFields.includes('unit_price')))) {
@@ -291,6 +355,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         calculateTotal();
+        renderCategoryCustomFields(categorySelect.value);
     }
 
     categorySelect.addEventListener('change', syncFormState);

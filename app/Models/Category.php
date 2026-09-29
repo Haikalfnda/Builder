@@ -17,6 +17,11 @@ class Category extends Model
         'required_fields' => 'array',
     ];
 
+    public function fields(): HasMany
+    {
+        return $this->hasMany(CategoryField::class)->orderBy('order', 'asc');
+    }
+
     public function transactions(): HasMany
     {
         return $this->hasMany(Transaction::class);

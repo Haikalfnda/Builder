@@ -13,7 +13,7 @@ class Transaction extends Model
     protected $fillable = [
         'type', 'transaction_date', 'category_id', 'tourism_place_id', 'income_source_id',
         'package_name', 'description', 'quantity', 'unit_price', 'amount',
-        'payment_method', 'status', 'proof_path',
+        'payment_method', 'status', 'proof_path', 'custom_values',
     ];
 
     protected function casts(): array
@@ -23,10 +23,22 @@ class Transaction extends Model
             'quantity' => 'decimal:2',
             'unit_price' => 'decimal:2',
             'amount' => 'decimal:2',
+            'custom_values' => 'array',
         ];
     }
 
-    public function category(): BelongsTo { return $this->belongsTo(Category::class); }
-    public function tourismPlace(): BelongsTo { return $this->belongsTo(TourismPlace::class); }
-    public function incomeSource(): BelongsTo { return $this->belongsTo(IncomeSource::class); }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
+
+    public function tourismPlace()
+    {
+        return $this->belongsTo(TourismPlace::class);
+    }
+
+    public function incomeSource()
+    {
+        return $this->belongsTo(IncomeSource::class);
+    }
 }
