@@ -83,7 +83,6 @@
                        value="{{ old('unit_price',$transaction->unit_price??0) }}">
             </div>
 
-            {{-- FIELD TOTAL / AMOUNT (Ubah data-field ke "amount" dan tambahkan hidden input untuk dikirim ke backend) --}}
             <div class="field" data-field="amount">
                 <label>{{ __('messages.total') ?? 'Total Amount' }}</label>
                 <input class="readonly-money"
@@ -95,7 +94,7 @@
                 <input type="hidden" name="amount" id="amountInput" value="{{ old('amount', $transaction->amount ?? 0) }}">
             </div>
 
-            <div class="field" data-field="tourism_place_id">
+            <div class="field" data-field="place">
                 <label>{{ __('messages.place') }}</label>
 
                 <select name="tourism_place_id">
@@ -112,7 +111,7 @@
                 </select>
             </div>
 
-            <div class="field income-only" data-field="income_source_id">
+            <div class="field income-only" data-field="source">
                 <label>{{ __('messages.income_source') }}</label>
 
                 <select name="income_source_id">
@@ -145,7 +144,7 @@
                 </select>
             </div>
 
-            <div class="field full" data-field="package_name">
+            <div class="field full" data-field="package">
                 <label>{{ __('messages.tour_package') }}</label>
 
                 <input type="text"
@@ -174,7 +173,7 @@
                     {{ __('messages.payment_proof_hint') }}
                 </small>
 
-                @if($editing && $transaction->proof_path)
+                @if($editing &&$transaction->proof_path)
                     <a class="existing-proof"
                        target="_blank"
                        href="{{ asset('storage/'.$transaction->proof_path) }}">
@@ -203,8 +202,8 @@
 
         </div>
 
-        <div id="customFieldsContainer" class="field full" style="display: none; margin-top: 12px; border-top: 1px dashed #e5e7eb; padding-top: 12px;">
-            <h4 style="font-size: 14px; font-weight: 600; margin-bottom: 10px;">{{ __('messages.custom_fields') ?? 'Informasi Tambahan Kategori' }}</h4>
+        {{-- FIELD KUSTOM  --}}
+        <div id="customFieldsContainer" class="field full" style="display: none; margin-top: 16px;">
             <div id="customFieldsList" class="form-grid"></div>
         </div>
 
@@ -237,7 +236,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const customFieldsContainer = document.getElementById('customFieldsContainer');
     const customFieldsList = document.getElementById('customFieldsList');
 
-    // Mengambil nilai awal custom_values jika sedang mode edit
     const existingCustomValues = @json(old('custom_values', $transaction->custom_values ?? []));
 
     function calculateTotal() {
@@ -275,14 +273,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 fields.forEach(field => {
                     const fieldDiv = document.createElement('div');
-                    fieldDiv.className = (field.field_type === 'textarea') ? 'field full' : 'field';
+                    fieldDiv.className = (field.field_type === 'textarea' || field.field_type === 'file') ? 'field full' : 'field';
 
                     const label = document.createElement('label');
                     label.innerHTML = `${field.field_label} ${field.is_required ? '<span style="color:red">*</span>' : ''}`;
                     fieldDiv.appendChild(label);
 
-                    const inputName = `custom_values[${field.field_name}]`;
-                    const val = existingCustomValues[field.field_name] || '';
+                    const keyName = field.field_name || field.id;
+                    const inputName = `custom_fields[${keyName}]`;
+                    const val = existingCustomValues[keyName] || '';
                     const requiredAttr = field.is_required ? 'required' : '';
 
                     let inputEl = '';
@@ -295,12 +294,23 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (field.field_type === 'textarea') {
                         inputEl = `<textarea name="${inputName}" rows="3" ${requiredAttr}>${val}</textarea>`;
                     } else if (field.field_type === 'select') {
+                        let parsedOptions = [];
+                        if (Array.isArray(field.options)) {
+                            parsedOptions = field.options;
+                        } else if (typeof field.options === 'string' && field.options.trim() !== '') {
+                            parsedOptions = field.options.split(',').map(item => item.trim());
+                        }
+
                         let opts = '<option value="">-- Pilih --</option>';
-                        (field.options || []).forEach(opt => {
-                            const selected = val === opt ? 'selected' : '';
-                            opts += `<option value="${opt}" ${selected}>${opt}</option>`;
+                        parsedOptions.forEach(opt => {
+                            if (opt !== '') {
+                                const selected = val === opt ? 'selected' : '';
+                                opts += `<option value="${opt}" ${selected}>${opt}</option>`;
+                            }
                         });
                         inputEl = `<select name="${inputName}" ${requiredAttr}>${opts}</select>`;
+                    } else if (field.field_type === 'file') {
+                        inputEl = `<input type="file" name="${inputName}" accept="image/*,.pdf" ${requiredAttr}>`;
                     }
 
                     fieldDiv.insertAdjacentHTML('beforeend', inputEl);
