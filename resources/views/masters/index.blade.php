@@ -174,10 +174,10 @@
                     @csrf
                     @method('PUT')
 
-                    {{-- FLEX CONTAINER UTAMA (2 KOLOM: KIRI & KANAN) --}}
+                    {{-- FLEX CONTAINER UTAMA --}}
                     <div style="display: flex !important; flex-direction: row !important; gap: 16px; align-items: flex-start; justify-content: space-between; width: 100%;">
 
-                        {{-- SISI KIRI: DATA KATEGORI --}}
+                        {{-- DATA KATEGORI --}}
                         <div style="flex: 1 1 45%; display: flex; flex-direction: column; gap: 8px;">
 
                             {{-- Input Nama Kategori --}}
@@ -219,7 +219,7 @@
 
                         </div>
 
-                        {{-- SISI KANAN: FIELD KUSTOM --}}
+                        {{-- FIELD KUSTOM --}}
                         <div style="flex: 1 1 50%; border-left: 1px dashed #cbd5e1; padding-left: 12px; box-sizing: border-box;">
 
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
@@ -269,7 +269,7 @@
 
                     </div>
 
-                    {{-- FOOTER Aksi: SIMPAN (KIRI) DAN HAPUS (KANAN) DALAM SATU BARIS HATI/TINGGI SEJAJAR --}}
+                    {{-- FOOTER Aksi --}}
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px solid #f1f5f9; padding-top: 8px;">
                         <button class="text-button" type="submit" style="padding: 4px 10px; font-size: 12px; font-weight: 600;">
                             {{ __('messages.save') }}
@@ -296,9 +296,7 @@
     </section>
 
 
-    {{-- =========================================================
-        SUMBER PENDAPATAN
-    ========================================================== --}}
+    {{-- =====SUMBER PENDAPATAN===== --}}
     <section class="panel master-card">
 
         <div class="panel-heading">
@@ -472,14 +470,13 @@ function toggleFieldOptions(select)
 
 function showSelectInfo()
 {
-    // Kalau toast sudah ada, hapus dulu
     const oldToast = document.getElementById('select-info-toast');
 
     if (oldToast) {
         oldToast.remove();
     }
 
-    // Buat toast
+    //toast
     const toast = document.createElement('div');
 
     toast.id = 'select-info-toast';
@@ -518,24 +515,10 @@ function showSelectInfo()
             </span>
         </div>
 
-        <button
-            type="button"
-            onclick="this.parentElement.remove()"
-            style="
-                border:0;
-                background:transparent;
-                color:#999;
-                font-size:19px;
-                line-height:1;
-                padding:0;
-                cursor:pointer;
-            "
-        >
-            ×
-        </button>
-    `;
+        <button type="button" onclick="this.parentElement.remove()" style="border:0; background:transparent; 
+            color:#999; font-size:19px; line-height:1; padding:0; cursor:pointer;">×
+        </button>`;
 
-    // Style utama toast
     Object.assign(toast.style, {
         position: 'fixed',
         right: '25px',
@@ -555,7 +538,6 @@ function showSelectInfo()
 
     document.body.appendChild(toast);
 
-    // Hilang otomatis setelah 5 detik
     setTimeout(() => {
         if (toast && toast.parentNode) {
             toast.remove();
