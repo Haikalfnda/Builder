@@ -107,7 +107,7 @@
 
         {{-- Table --}}
         <div class="table-scroll">
-            <table id="transactionTable">
+            <table id="transactionTable" class="transaction-table">
                 <thead>
                     <tr>
                         <th>{{ __('transactions.th_date') }}</th>

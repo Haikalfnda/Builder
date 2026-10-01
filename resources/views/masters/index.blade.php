@@ -2,6 +2,7 @@
 
 @section('content')
 
+<div class="master-data-page">
 <div class="page-heading-row">
     <div>
         <h1>{{ __('messages.master_data') }}</h1>
@@ -21,7 +22,7 @@
     </div>
 @endif
 
-<div class="master-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(450px, 1fr)); align-items: start; gap: 20px;">
+<div class="master-grid">
 
 {{-- =====TEMPAT WISATA===== --}}
 <section class="panel master-card">
@@ -59,15 +60,12 @@
 
         @foreach ($places as $place)
 
-            <div
-                class="master-row"
-                style="display:flex;align-items:center;justify-content:space-between;gap:8px;"
-            >
+            <div class="master-row master-row-place">
 
                 <form
                     method="POST"
                     action="{{ route('masters.places.update', $place) }}"
-                    style="flex:1;display:flex;gap:8px;align-items:center;"
+                    class="master-edit-form place-edit-form"
                 >
 
                     @csrf
@@ -132,32 +130,32 @@
 
 
     {{-- =======KATEGORI========= --}}
-<section class="panel master-card" style="padding: 16px;">
+<section class="panel master-card category-card">
 
-    <div class="panel-heading" style="margin-bottom: 12px;">
-        <h2 style="margin: 0; font-size: 18px;">{{ __('messages.categories') }}</h2>
+    <div class="panel-heading">
+        <h2>{{ __('messages.categories') }}</h2>
     </div>
 
     {{-- TAMBAH KATEGORI --}}
-    <form class="inline-master-form" method="POST" action="{{ route('masters.categories.store') }}" style="display: flex; gap: 8px; margin-bottom: 16px;">
+    <form class="inline-master-form category-create-form" method="POST" action="{{ route('masters.categories.store') }}">
         @csrf
 
-        <input name="name" placeholder="{{ __('messages.new_category') }}" required style="flex: 2; padding: 6px 10px; font-size: 13px;">
+        <input name="name" placeholder="{{ __('messages.new_category') }}" required>
 
-        <select name="type" style="flex: 1; padding: 6px 8px; font-size: 13px;">
+        <select name="type">
             <option value="income">{{ __('messages.income') }}</option>
             <option value="expense">{{ __('messages.expense') }}</option>
             <option value="both">{{ __('messages.both') }}</option>
         </select>
 
-        <button class="gold-button" type="submit" style="padding: 6px 14px; font-size: 13px; white-space: nowrap;">
+        <button class="gold-button" type="submit">
             {{ __('messages.add') }}
         </button>
     </form>
 
 
     {{-- LIST KATEGORI --}}
-    <div class="master-list" style="display: flex; flex-direction: column; gap: 12px;">
+    <div class="master-list category-list">
 
         @foreach ($categories as $category)
 
@@ -168,17 +166,17 @@
                 ];
             @endphp
 
-            <div class="master-row" style="border: 1px solid #e2e8f0; border-radius: 8px; background: #fafafa; padding: 12px; width: 100%; box-sizing: border-box;">
+            <div class="master-row category-row">
 
                 <form method="POST" action="{{ route('masters.categories.update', $category) }}" style="width: 100%; margin: 0; padding: 0;">
                     @csrf
                     @method('PUT')
 
                     {{-- FLEX CONTAINER UTAMA --}}
-                    <div style="display: flex !important; flex-direction: row !important; gap: 16px; align-items: flex-start; justify-content: space-between; width: 100%;">
+                    <div class="category-master-layout">
 
                         {{-- DATA KATEGORI --}}
-                        <div style="flex: 1 1 45%; display: flex; flex-direction: column; gap: 8px;">
+                        <div class="category-details">
 
                             {{-- Input Nama Kategori --}}
                             <input name="name" value="{{ $category->name }}" placeholder="Nama Kategori" style="width: 100%; font-weight: 600; padding: 6px 10px; font-size: 13px; box-sizing: border-box;">
@@ -220,7 +218,7 @@
                         </div>
 
                         {{-- FIELD KUSTOM --}}
-                        <div style="flex: 1 1 50%; border-left: 1px dashed #cbd5e1; padding-left: 12px; box-sizing: border-box;">
+                        <div class="category-custom-fields">
 
                             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
                                 <span style="font-size: 12px; font-weight: 600; color: #475569;">
@@ -270,7 +268,7 @@
                     </div>
 
                     {{-- FOOTER Aksi --}}
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px; border-top: 1px solid #f1f5f9; padding-top: 8px;">
+                    <div class="category-actions">
                         <button class="text-button" type="submit" style="padding: 4px 10px; font-size: 12px; font-weight: 600;">
                             {{ __('messages.save') }}
                         </button>
@@ -330,15 +328,12 @@
 
             @foreach ($sources as $source)
 
-                <div
-                    class="master-row"
-                    style="display:flex;align-items:center;justify-content:space-between;gap:8px;"
-                >
+                <div class="master-row master-row-source">
 
                     <form
                         method="POST"
                         action="{{ route('masters.sources.update', $source) }}"
-                        style="flex:1;display:flex;gap:8px;align-items:center;"
+                        class="master-edit-form source-edit-form"
                     >
                         @csrf
                         @method('PUT')
@@ -368,7 +363,7 @@
     </div>
 </section>
 
-
+</div>
 
 {{-- ======JAVASCRIPT CUSTOM FIELD======= --}}
 

@@ -197,7 +197,7 @@
             </a>
         </div>
         <div class="table-scroll">
-            <table id="reportTable">
+            <table id="reportTable" class="report-table">
                 <thead>
                     <tr>
                         <th>{{ __('messages.date') }}</th>

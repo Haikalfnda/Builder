@@ -50,43 +50,44 @@
 
     <!-- Tabel Daftar Kategori -->
     <h3>Daftar Kategori</h3>
-    <table class="table table-bordered" style="width:100%; border-collapse:collapse;" border="1">
-        <thead>
-            <tr>
-                <th>Nama</th>
-                <th>Tipe</th>
-                <th>Custom Fields</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach($categories as$category)
-            <tr>
-                <td>{{ $category->name }}</td>
-                <td><span class="badge">{{ strtoupper($category->type) }}</span></td>
-                <td>
-                    <ul>
-                        @forelse($category->fields as$field)
-                            <li>{{ $field->field_label }} (<i>{{$field->field_type }}</i>)</li>
-                        @empty
-                            <li><small>Tidak ada field khusus</small></li>
-                        @endforelse
-                    </ul>
-                </td>
-                <td>
-                    <!-- Tombol Hapus -->
-                    <form action="{{ route('categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kategori {{ $category->name }}?')" style="display:inline;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; cursor:pointer;">
-                            Hapus
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            @endforeach
-        </tbody>
-    </table>
+    <div class="table-scroll">
+        <table class="master-category-table">
+            <thead>
+                <tr>
+                    <th>Nama</th>
+                    <th>Tipe</th>
+                    <th>Custom Fields</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($categories as $category)
+                <tr>
+                    <td>{{ $category->name }}</td>
+                    <td><span class="badge">{{ strtoupper($category->type) }}</span></td>
+                    <td>
+                        <ul>
+                            @forelse($category->fields as $field)
+                                <li>{{ $field->field_label }} (<i>{{$field->field_type }}</i>)</li>
+                            @empty
+                                <li><small>Tidak ada field khusus</small></li>
+                            @endforelse
+                        </ul>
+                    </td>
+                    <td>
+                        <form action="{{ route('categories.destroy', $category) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kategori {{ $category->name }}?')" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" style="background:#ef4444; color:#fff; border:none; padding:4px 8px; cursor:pointer;">
+                                Hapus
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
